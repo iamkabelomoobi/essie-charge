@@ -1,0 +1,91 @@
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import React from "react";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
+
+const navItems: {
+  key: string;
+  icon: React.ReactNode;
+  route:
+    | "/(dashboard)/DashboardScreen"
+    | "/(dashboard)/MapScreen"
+    | "/(dashboard)/ScanScreen"
+    | "/(dashboard)/AlertsScreen"
+    | "/(dashboard)/SettingsScreen";
+  scan?: boolean;
+}[] = [
+  {
+    key: "dashboard",
+    icon: <Ionicons name="home-outline" size={28} color="#222" />,
+    route: "/(dashboard)/DashboardScreen",
+  },
+  {
+    key: "map",
+    icon: <Ionicons name="map-outline" size={28} color="#222" />,
+    route: "/(dashboard)/MapScreen",
+  },
+  {
+    key: "scan",
+    icon: <MaterialIcons name="center-focus-strong" size={32} color="#fff" />,
+    route: "/(dashboard)/ScanScreen",
+    scan: true,
+  },
+  {
+    key: "alerts",
+    icon: <Ionicons name="notifications-outline" size={28} color="#222" />,
+    route: "/(dashboard)/AlertsScreen",
+  },
+  {
+    key: "settings",
+    icon: <Ionicons name="settings-outline" size={28} color="#222" />,
+    route: "/(dashboard)/SettingsScreen",
+  },
+];
+
+export default function Navbar() {
+  const router = useRouter();
+
+  return (
+    <View style={styles.container}>
+      {navItems.map((item) => (
+        <TouchableOpacity
+          key={item.key}
+          style={item.scan ? styles.scanButton : undefined}
+          onPress={() => router.push(item.route)}
+        >
+          {item.icon}
+        </TouchableOpacity>
+      ))}
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    position: "absolute",
+    left: 20,
+    right: 20,
+    bottom: 30,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    borderRadius: 32,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    elevation: 8,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 4 },
+  },
+  scanButton: {
+    backgroundColor: "#222",
+    borderRadius: 24,
+    padding: 12,
+    marginHorizontal: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    elevation: 4,
+  },
+});
