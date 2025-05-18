@@ -6,10 +6,11 @@ import {
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
-import { StatusBar } from "react-native";
+import { StatusBar, View } from "react-native";
 import "react-native-reanimated";
 
 import Navbar from "@/components/navbar/Navbar";
+import { AlertsProvider } from "@/context/AlertsContext";
 import { useColorScheme } from "@/hooks/useColorScheme";
 
 export default function RootLayout() {
@@ -32,24 +33,30 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <StatusBar
-        barStyle={colorScheme === "dark" ? "light-content" : "dark-content"}
-      />
-      <Stack screenOptions={{ headerShown: false }}>
-        {showSplash ? (
-          <Stack.Screen name="SplashScreen" />
-        ) : (
-          <>
-            <Stack.Screen name="(auth)" />
-            <Stack.Screen name="(dashboard)" />
-            <Stack.Screen name="(tabs)" />
-            <Stack.Screen name="+not-found" />
-          </>
-        )}
-      </Stack>
-      {/* Only show Navbar when splash is not visible */}
-      {/* {!showSplash && <Navbar />} */}
-    </ThemeProvider>
+    <AlertsProvider>
+      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+        <StatusBar
+          barStyle={colorScheme === "dark" ? "light-content" : "dark-content"}
+        />
+        <View style={{ flex: 1 }}>
+          <Stack screenOptions={{ headerShown: false }}>
+            {showSplash ? (
+              <Stack.Screen name="SplashScreen" />
+            ) : (
+              <>
+                <Stack.Screen name="(dashboard)" />
+              </>
+            )}
+          </Stack>
+          {!showSplash && (
+            <View
+              style={{ position: "absolute", left: 0, right: 0, bottom: 10 }}
+            >
+              <Navbar />
+            </View>
+          )}
+        </View>
+      </ThemeProvider>
+    </AlertsProvider>
   );
 }

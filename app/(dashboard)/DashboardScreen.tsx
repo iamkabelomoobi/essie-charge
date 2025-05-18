@@ -66,10 +66,6 @@ export default function DashboardScreen() {
           <TouchableOpacity>
             <Ionicons name="menu" size={28} color="#222" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>
-            Hello{"\n"}
-            <Text style={styles.userName}>John Doe</Text>
-          </Text>
           <TouchableOpacity>
             <Ionicons name="search" size={26} color="#222" />
           </TouchableOpacity>
@@ -218,6 +214,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 24,
+    top: 24,
+    bottom: 10
   },
   headerTitle: {
     color: "#222",

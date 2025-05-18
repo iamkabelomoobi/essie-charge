@@ -52,7 +52,7 @@ const SplashScreen = () => {
   }, [scaleAnim, opacityAnim]);
 
   const handleGetStarted = () => {
-    router.push("/LoginScreen");
+    router.push("/DashboardScreen");
   };
 
   return (

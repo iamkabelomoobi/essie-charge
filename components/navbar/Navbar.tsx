@@ -1,7 +1,8 @@
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useAlerts } from "../../context/AlertsContext";
 
 const navItems: {
   key: string;
@@ -44,6 +45,7 @@ const navItems: {
 
 export default function Navbar() {
   const router = useRouter();
+  const { unreadCount } = useAlerts();
 
   return (
     <View style={styles.container}>
@@ -53,7 +55,18 @@ export default function Navbar() {
           style={item.scan ? styles.scanButton : undefined}
           onPress={() => router.push(item.route)}
         >
-          {item.icon}
+          {item.key === "alerts" ? (
+            <View>
+              {item.icon}
+              {unreadCount > 0 && (
+                <View style={styles.badge}>
+                  <Text style={styles.badgeText}>{unreadCount}</Text>
+                </View>
+              )}
+            </View>
+          ) : (
+            item.icon
+          )}
         </TouchableOpacity>
       ))}
     </View>
@@ -87,5 +100,24 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     elevation: 4,
+  },
+  badge: {
+    position: "absolute",
+    top: -4,
+    right: -6,
+    backgroundColor: "#EF4444",
+    borderRadius: 8,
+    minWidth: 16,
+    height: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 10,
+    paddingHorizontal: 3,
+  },
+  badgeText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 10,
+    textAlign: "center",
   },
 });

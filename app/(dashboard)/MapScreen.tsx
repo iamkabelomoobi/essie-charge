@@ -268,6 +268,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+    top: 30
   },
   floatingSearchBarContainer: {
     position: "absolute",
