@@ -1,10 +1,11 @@
 import { LinearGradient } from "expo-linear-gradient";
-import React from "react";
+import { useRouter } from "expo-router";
+import React, { useEffect, useRef } from "react";
 import {
+  Animated,
   Dimensions,
   Image,
   SafeAreaView,
-  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -14,8 +15,44 @@ import {
 const { width } = Dimensions.get("window");
 
 const SplashScreen = () => {
+  const router = useRouter();
+
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const opacityAnim = useRef(new Animated.Value(0.5)).current;
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.parallel([
+        Animated.sequence([
+          Animated.timing(scaleAnim, {
+            toValue: 1.25,
+            duration: 500,
+            useNativeDriver: true,
+          }),
+          Animated.timing(scaleAnim, {
+            toValue: 1,
+            duration: 500,
+            useNativeDriver: true,
+          }),
+        ]),
+        Animated.sequence([
+          Animated.timing(opacityAnim, {
+            toValue: 1,
+            duration: 500,
+            useNativeDriver: true,
+          }),
+          Animated.timing(opacityAnim, {
+            toValue: 0.5,
+            duration: 500,
+            useNativeDriver: true,
+          }),
+        ]),
+      ])
+    ).start();
+  }, [scaleAnim, opacityAnim]);
+
   const handleGetStarted = () => {
-    // Add navigation or logic here
+    router.push("/LoginScreen");
   };
 
   return (
@@ -27,6 +64,22 @@ const SplashScreen = () => {
             style={styles.logo}
           />
           <Text style={styles.appName}>NEVER LOSE POWER!</Text>
+          {/* Horizontal faded bolt line */}
+          <View style={styles.boltLineWrapper}>
+            <View style={styles.boltLine} />
+            <Animated.Image
+              source={require("../assets/images/charging.png")}
+              style={[
+                styles.boltIcon,
+                {
+                  transform: [{ scale: scaleAnim }],
+                  opacity: opacityAnim,
+                },
+              ]}
+              resizeMode="contain"
+            />
+            <View style={styles.boltLine} />
+          </View>
         </View>
         <View style={styles.bottomCurveContainer}>
           <View style={styles.bottomCurve} />
@@ -77,6 +130,26 @@ const styles = StyleSheet.create({
     color: "#666",
     marginBottom: 8,
   },
+  boltLineWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 12,
+    marginBottom: 8,
+    width: "80%",
+    alignSelf: "center",
+  },
+  boltLine: {
+    flex: 1,
+    height: 2,
+    backgroundColor: "#000",
+    opacity: 1.0,
+    borderRadius: 1,
+  },
+  boltIcon: {
+    width: 32,
+    height: 32,
+    marginHorizontal: 12,
+  },
   bottomCurveContainer: {
     width: "100%",
     alignItems: "center",
@@ -91,7 +164,7 @@ const styles = StyleSheet.create({
     height: 90,
     borderTopLeftRadius: 90,
     borderTopRightRadius: 90,
-    backgroundColor: "#27AE60", // changed from #2D7DF6 to green
+    backgroundColor: "#27AE60",
     zIndex: 1,
   },
   button: {
@@ -100,7 +173,7 @@ const styles = StyleSheet.create({
     left: width * 0.25,
     width: width * 0.5,
     height: 48,
-    backgroundColor: "#fff", // changed from #2D7DF6 to white
+    backgroundColor: "#fff",
     borderRadius: 24,
     alignItems: "center",
     justifyContent: "center",
@@ -108,7 +181,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   buttonText: {
-    color: "#000", // changed from #fff to black
+    color: "#000",
     fontSize: 16,
     fontWeight: "bold",
     letterSpacing: 1,
