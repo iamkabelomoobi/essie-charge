@@ -21,6 +21,15 @@ export default function LoginScreen() {
   const [rememberMe, setRememberMe] = useState(false);
   const router = useRouter();
 
+  const handleLogin = () => {
+    if (!email || !password) {
+      alert("Please enter both email and password.");
+      return;
+    }
+    // Add your login logic here
+    console.log("Logging in with:", { email, password });
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -83,7 +92,7 @@ export default function LoginScreen() {
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity style={styles.loginButton}>
+          <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
             <Text style={styles.loginButtonText}>Login</Text>
           </TouchableOpacity>
 

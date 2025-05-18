@@ -81,7 +81,13 @@ export default function RegisterScreen() {
               />
             </TouchableOpacity>
           </View>
-          <TouchableOpacity style={styles.loginButton}>
+          <TouchableOpacity
+            style={styles.loginButton}
+            onPress={() => {
+              // Add your registration logic here
+              console.log("Sign Up button pressed");
+            }}
+          >
             <Text style={styles.loginButtonText}>Sign Up</Text>
           </TouchableOpacity>
           <View style={styles.orRow}>
