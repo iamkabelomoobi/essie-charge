@@ -5,6 +5,7 @@ import {
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
+import { useEffect, useState } from "react";
 import { StatusBar } from "react-native";
 import "react-native-reanimated";
 
@@ -16,18 +17,34 @@ export default function RootLayout() {
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
 
+  const [showSplash, setShowSplash] = useState(true);
+
+  useEffect(() => {
+    if (showSplash) {
+      const timer = setTimeout(() => setShowSplash(false), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [showSplash]);
+
   if (!loaded) {
-    // Async font loading only occurs in development.
     return null;
   }
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <StatusBar hidden />
-      <Stack>
-        <Stack.Screen name="SplashScreen" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
+      <StatusBar
+        barStyle={colorScheme === "dark" ? "light-content" : "dark-content"}
+      />
+      <Stack screenOptions={{ headerShown: false }}>
+        {showSplash ? (
+          <Stack.Screen name="SplashScreen" />
+        ) : (
+          <>
+            <Stack.Screen name="(auth)" />
+            <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="+not-found" />
+          </>
+        )}
       </Stack>
     </ThemeProvider>
   );
