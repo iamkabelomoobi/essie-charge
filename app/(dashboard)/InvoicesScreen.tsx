@@ -2,13 +2,13 @@ import { Feather } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import {
-    FlatList,
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
+  FlatList,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 // Sample invoice data
@@ -47,12 +47,24 @@ const invoices = [
 
 const InvoicesScreen: React.FC = () => {
   const [searchText, setSearchText] = useState("");
+  const [filter, setFilter] = useState<"All" | "Paid" | "Pending">("All");
   const navigation = useNavigation<any>();
 
+  // Filter invoices based on filter and search
+  const filteredInvoices = invoices.filter((invoice) => {
+    const matchesFilter = filter === "All" || invoice.status === filter;
+    const matchesSearch =
+      invoice.id.toLowerCase().includes(searchText.toLowerCase()) ||
+      invoice.date.toLowerCase().includes(searchText.toLowerCase());
+    return matchesFilter && matchesSearch;
+  });
+
   const renderInvoiceItem = ({ item }: any) => (
-    <TouchableOpacity 
+    <TouchableOpacity
       style={styles.invoiceCard}
-      onPress={() => navigation.navigate("InvoiceDetailScreen", { invoice: item })}
+      onPress={() =>
+        navigation.navigate("InvoiceDetailScreen", { invoice: item })
+      }
     >
       <View style={styles.cardLeft}>
         <Text style={styles.invoiceId}>{item.id}</Text>
@@ -60,14 +72,18 @@ const InvoicesScreen: React.FC = () => {
       </View>
       <View style={styles.cardRight}>
         <Text style={styles.invoiceAmount}>R{item.amount.toFixed(2)}</Text>
-        <View style={[
-          styles.statusBadge, 
-          item.status === "Paid" ? styles.paidBadge : styles.pendingBadge
-        ]}>
-          <Text style={[
-            styles.statusText,
-            item.status === "Paid" ? styles.paidText : styles.pendingText
-          ]}>
+        <View
+          style={[
+            styles.statusBadge,
+            item.status === "Paid" ? styles.paidBadge : styles.pendingBadge,
+          ]}
+        >
+          <Text
+            style={[
+              styles.statusText,
+              item.status === "Paid" ? styles.paidText : styles.pendingText,
+            ]}
+          >
             {item.status}
           </Text>
         </View>
@@ -93,19 +109,55 @@ const InvoicesScreen: React.FC = () => {
       </View>
 
       <View style={styles.filterRow}>
-        <TouchableOpacity style={[styles.filterBtn, styles.activeFilterBtn]}>
-          <Text style={[styles.filterText, styles.activeFilterText]}>All</Text>
+        <TouchableOpacity
+          style={[styles.filterBtn, filter === "All" && styles.activeFilterBtn]}
+          onPress={() => setFilter("All")}
+        >
+          <Text
+            style={[
+              styles.filterText,
+              filter === "All" && styles.activeFilterText,
+            ]}
+          >
+            All
+          </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.filterBtn}>
-          <Text style={styles.filterText}>Paid</Text>
+        <TouchableOpacity
+          style={[
+            styles.filterBtn,
+            filter === "Paid" && styles.activeFilterBtn,
+          ]}
+          onPress={() => setFilter("Paid")}
+        >
+          <Text
+            style={[
+              styles.filterText,
+              filter === "Paid" && styles.activeFilterText,
+            ]}
+          >
+            Paid
+          </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.filterBtn}>
-          <Text style={styles.filterText}>Pending</Text>
+        <TouchableOpacity
+          style={[
+            styles.filterBtn,
+            filter === "Pending" && styles.activeFilterBtn,
+          ]}
+          onPress={() => setFilter("Pending")}
+        >
+          <Text
+            style={[
+              styles.filterText,
+              filter === "Pending" && styles.activeFilterText,
+            ]}
+          >
+            Pending
+          </Text>
         </TouchableOpacity>
       </View>
 
       <FlatList
-        data={invoices}
+        data={filteredInvoices}
         renderItem={renderInvoiceItem}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContainer}
@@ -115,10 +167,10 @@ const InvoicesScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: "#fafbfc", 
-    top: 40 
+  container: {
+    flex: 1,
+    backgroundColor: "#fafbfc",
+    top: 40,
   },
   header: {
     paddingHorizontal: 20,
