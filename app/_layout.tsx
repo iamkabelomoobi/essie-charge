@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { StatusBar } from "react-native";
 import "react-native-reanimated";
 
+import Navbar from "@/components/navbar/Navbar";
 import { useColorScheme } from "@/hooks/useColorScheme";
 
 export default function RootLayout() {
@@ -41,11 +42,14 @@ export default function RootLayout() {
         ) : (
           <>
             <Stack.Screen name="(auth)" />
+            <Stack.Screen name="(dashboard)" />
             <Stack.Screen name="(tabs)" />
             <Stack.Screen name="+not-found" />
           </>
         )}
       </Stack>
+      {/* Only show Navbar when splash is not visible */}
+      {/* {!showSplash && <Navbar />} */}
     </ThemeProvider>
   );
 }
