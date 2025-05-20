@@ -1,123 +1,46 @@
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { useAlerts } from "../../context/AlertsContext";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { Feather } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
-const navItems: {
-  key: string;
-  icon: React.ReactNode;
-  route:
-    | "/(dashboard)/DashboardScreen"
-    | "/(dashboard)/MapScreen"
-    | "/(dashboard)/ScanScreen"
-    | "/(dashboard)/AlertsScreen"
-    | "/(dashboard)/SettingsScreen";
-  scan?: boolean;
-}[] = [
-  {
-    key: "dashboard",
-    icon: <Ionicons name="home-outline" size={28} color="#222" />,
-    route: "/(dashboard)/DashboardScreen",
-  },
-  {
-    key: "map",
-    icon: <Ionicons name="map-outline" size={28} color="#222" />,
-    route: "/(dashboard)/MapScreen",
-  },
-  {
-    key: "scan",
-    icon: <MaterialIcons name="center-focus-strong" size={32} color="#fff" />,
-    route: "/(dashboard)/ScanScreen",
-    scan: true,
-  },
-  {
-    key: "alerts",
-    icon: <Ionicons name="notifications-outline" size={28} color="#222" />,
-    route: "/(dashboard)/AlertsScreen",
-  },
-  {
-    key: "settings",
-    icon: <Ionicons name="settings-outline" size={28} color="#222" />,
-    route: "/(dashboard)/SettingsScreen",
-  },
-];
+type NavbarProps = {
+  title: string;
+  onBack?: () => void;
+};
 
-export default function Navbar() {
-  const router = useRouter();
-  const { unreadCount } = useAlerts();
-
+const Navbar: React.FC<NavbarProps> = ({ title, onBack }) => {
+  const navigation = useNavigation<any>();
   return (
-    <View style={styles.container}>
-      {navItems.map((item) => (
-        <TouchableOpacity
-          key={item.key}
-          style={item.scan ? styles.scanButton : undefined}
-          onPress={() => router.push(item.route)}
-        >
-          {item.key === "alerts" ? (
-            <View>
-              {item.icon}
-              {unreadCount > 0 && (
-                <View style={styles.badge}>
-                  <Text style={styles.badgeText}>{unreadCount}</Text>
-                </View>
-              )}
-            </View>
-          ) : (
-            item.icon
-          )}
-        </TouchableOpacity>
-      ))}
+    <View style={styles.headerRow}>
+      <TouchableOpacity
+        style={styles.backBtn}
+        onPress={onBack ? onBack : () => navigation.goBack()}
+      >
+        <Feather name="arrow-left" size={24} color="#222" />
+      </TouchableOpacity>
+      <Text style={styles.header}>{title}</Text>
+      <View style={{ width: 32 }} />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  container: {
-    position: "absolute",
-    left: 20,
-    right: 20,
-    bottom: 30,
+  headerRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: "#fff",
-    borderRadius: 32,
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    elevation: 8,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 4 },
-  },
-  scanButton: {
-    backgroundColor: "#222",
-    borderRadius: 24,
-    padding: 12,
-    marginHorizontal: 8,
     alignItems: "center",
     justifyContent: "center",
-    elevation: 4,
+    marginBottom: 18,
+    paddingTop: 24,},
+  backBtn: {
+    padding: 4,
+    marginRight: 10,
   },
-  badge: {
-    position: "absolute",
-    top: -4,
-    right: -6,
-    backgroundColor: "#EF4444",
-    borderRadius: 8,
-    minWidth: 16,
-    height: 16,
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: 10,
-    paddingHorizontal: 3,
-  },
-  badgeText: {
-    color: "#fff",
+  header: {
+    fontSize: 24,
     fontWeight: "bold",
-    fontSize: 10,
     textAlign: "center",
+    flex: 1,
   },
 });
+
+export default Navbar;
