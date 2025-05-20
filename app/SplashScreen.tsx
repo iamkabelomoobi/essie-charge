@@ -52,7 +52,7 @@ const SplashScreen = () => {
   }, [scaleAnim, opacityAnim]);
 
   const handleGetStarted = () => {
-    router.push("/DashboardScreen");
+    router.replace("/LoginScreen");
   };
 
   return (
@@ -64,7 +64,6 @@ const SplashScreen = () => {
             style={styles.logo}
           />
           <Text style={styles.appName}>NEVER LOSE POWER!</Text>
-          {/* Horizontal faded bolt line */}
           <View style={styles.boltLineWrapper}>
             <View style={styles.boltLine} />
             <Animated.Image
@@ -82,7 +81,6 @@ const SplashScreen = () => {
           </View>
         </View>
         <View style={styles.bottomCurveContainer}>
-          <View style={styles.bottomCurve} />
           <TouchableOpacity
             style={styles.button}
             onPress={handleGetStarted}
@@ -173,7 +171,7 @@ const styles = StyleSheet.create({
     left: width * 0.25,
     width: width * 0.5,
     height: 48,
-    backgroundColor: "#fff",
+    backgroundColor: "#22cc5e",
     borderRadius: 24,
     alignItems: "center",
     justifyContent: "center",
@@ -181,7 +179,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   buttonText: {
-    color: "#000",
+    color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
     letterSpacing: 1,
