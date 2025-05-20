@@ -4,12 +4,12 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
+import { Stack, useSegments } from "expo-router";
 import { useEffect, useState } from "react";
 import { StatusBar, View } from "react-native";
 import "react-native-reanimated";
 
-import Navbar from "@/components/navbar/Navbar";
+import BottomNav from "@/components/BottomNav";
 import { AlertsProvider } from "@/context/AlertsContext";
 import { useColorScheme } from "@/hooks/useColorScheme";
 
@@ -20,6 +20,7 @@ export default function RootLayout() {
   });
 
   const [showSplash, setShowSplash] = useState(true);
+  const segments = useSegments();
 
   useEffect(() => {
     if (showSplash) {
@@ -31,6 +32,8 @@ export default function RootLayout() {
   if (!loaded) {
     return null;
   }
+
+  const isDashboardRoute = segments[0] === "(dashboard)";
 
   return (
     <AlertsProvider>
@@ -44,15 +47,16 @@ export default function RootLayout() {
               <Stack.Screen name="SplashScreen" />
             ) : (
               <>
+                <Stack.Screen name="(auth)" />
                 <Stack.Screen name="(dashboard)" />
               </>
             )}
           </Stack>
-          {!showSplash && (
+          {!showSplash && isDashboardRoute && (
             <View
               style={{ position: "absolute", left: 0, right: 0, bottom: 10 }}
             >
-              <Navbar />
+              <BottomNav />
             </View>
           )}
         </View>
