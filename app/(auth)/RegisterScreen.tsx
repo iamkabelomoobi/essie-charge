@@ -1,3 +1,5 @@
+import AppleIcon from "@/components/icons/AppleIcon";
+import GoogleIcon from "@/components/icons/GoogleIcon";
 import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
@@ -84,7 +86,6 @@ export default function RegisterScreen() {
           <TouchableOpacity
             style={styles.loginButton}
             onPress={() => {
-              // Add your registration logic here
               console.log("Sign Up button pressed");
             }}
           >
@@ -97,29 +98,17 @@ export default function RegisterScreen() {
           </View>
           <View style={styles.socialRow}>
             <TouchableOpacity style={styles.socialButton}>
-              <AntDesign
-                name="google"
-                size={22}
-                color="#EA4335"
-                style={styles.socialIcon}
-              />
+              <GoogleIcon size={22} style={styles.socialIcon} />
               <Text style={styles.socialText}>Google</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.socialButton}>
-              <AntDesign
-                name="apple1"
-                size={22}
-                color="#000"
-                style={styles.socialIcon}
-              />
+              <AppleIcon size={22} style={styles.socialIcon} />
               <Text style={styles.socialText}>Apple</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.bottomRow}>
             <Text style={styles.bottomText}>Already have an account?</Text>
-            <TouchableOpacity
-              onPress={() => router.replace("/LoginScreen")}
-            >
+            <TouchableOpacity onPress={() => router.replace("/LoginScreen")}>
               <Text style={styles.bottomLink}> Sign In</Text>
             </TouchableOpacity>
           </View>
@@ -130,10 +119,10 @@ export default function RegisterScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff" }, // White background
+  container: { flex: 1, backgroundColor: "#fff" },
   header: {
     height: 120,
-    backgroundColor: "#fff", // White header
+    backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "flex-end",
     paddingBottom: 16,

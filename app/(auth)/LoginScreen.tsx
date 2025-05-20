@@ -1,20 +1,22 @@
+import AppleIcon from "@/components/icons/AppleIcon";
+import GoogleIcon from "@/components/icons/GoogleIcon";
 import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
-    Dimensions,
-    Image,
-    StyleSheet,
-    Switch,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Dimensions,
+  Image,
+  StyleSheet,
+  Switch,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 const { width } = Dimensions.get("window");
 
-export default function LoginScreen() {
+const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -28,6 +30,7 @@ export default function LoginScreen() {
     }
     // Add your login logic here
     console.log("Logging in with:", { email, password });
+    router.push("/(dashboard)/DashboardScreen");
   };
 
   return (
@@ -104,30 +107,18 @@ export default function LoginScreen() {
 
           <View style={styles.socialRow}>
             <TouchableOpacity style={styles.socialButton}>
-              <AntDesign
-                name="google"
-                size={22}
-                color="#EA4335"
-                style={styles.socialIcon}
-              />
+              <GoogleIcon size={22} style={styles.socialIcon} />
               <Text style={styles.socialText}>Google</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.socialButton}>
-              <AntDesign
-                name="apple1"
-                size={22}
-                color="#000"
-                style={styles.socialIcon}
-              />
+              <AppleIcon size={22} style={styles.socialIcon} />
               <Text style={styles.socialText}>Apple</Text>
             </TouchableOpacity>
           </View>
 
           <View style={styles.bottomRow}>
             <Text style={styles.bottomText}>Don&apos;t have an account?</Text>
-            <TouchableOpacity
-              onPress={() => router.push("/RegisterScreen")}
-            >
+            <TouchableOpacity onPress={() => router.push("/RegisterScreen")}>
               <Text style={styles.bottomLink}> Sign Up</Text>
             </TouchableOpacity>
           </View>
@@ -135,7 +126,9 @@ export default function LoginScreen() {
       </View>
     </View>
   );
-}
+};
+
+export default LoginScreen;
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff" }, // White background
