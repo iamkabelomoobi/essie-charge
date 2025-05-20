@@ -1,7 +1,14 @@
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import SideNav from "@/components/SideNav";
+import { Ionicons } from "@expo/vector-icons";
 import * as Location from "expo-location";
-import React, { useEffect, useState } from "react";
+import { router } from "expo-router";
+import React, { useEffect, useRef, useState } from "react";
 import {
+  Animated,
+  Easing,
+  FlatList,
+  Image,
+  Modal,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -10,7 +17,7 @@ import {
   View,
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
-import { useBatteryStatus } from "../../hooks/useBatteryStatus"; // adjust path if needed
+import { useBatteryStatus } from "../../hooks/useBatteryStatus";
 
 const STATION_COORDS = [
   {
@@ -34,20 +41,45 @@ const STATION_COORDS = [
 ];
 
 export default function DashboardScreen() {
-  // Assume useBatteryStatus returns these fields
   const { batteryLevel, estimatedTimeLeft, charging, batteryHealth } =
     useBatteryStatus();
+  const [sideNavVisible, setSideNavVisible] = useState(false);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [location, setLocation] = useState<{
     latitude: number;
     longitude: number;
   } | null>(null);
-  const [locationPermission, setLocationPermission] = useState<boolean>(false);
+
+  const [visible, setVisible] = useState(false);
+  const slideAnim = useRef(new Animated.Value(-300)).current; // Start off-screen to the left
+
+  const onClose = () => {
+    setSideNavVisible(false);
+    setVisible(false);
+  };
+
+  useEffect(() => {
+    if (sideNavVisible) {
+      setVisible(true); // Show modal when sideNavVisible is true
+      Animated.timing(slideAnim, {
+        toValue: 0, // Slide in to 0 (fully visible)
+        duration: 300,
+        easing: Easing.out(Easing.ease),
+        useNativeDriver: true,
+      }).start();
+    } else {
+      Animated.timing(slideAnim, {
+        toValue: -300, // Slide back out to the left
+        duration: 300,
+        easing: Easing.out(Easing.ease),
+        useNativeDriver: true,
+      }).start(() => setVisible(false)); // Hide modal after animation
+    }
+  }, [sideNavVisible]);
 
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
-      setLocationPermission(status === "granted");
       if (status === "granted") {
         let loc = await Location.getCurrentPositionAsync({});
         setLocation({
@@ -59,42 +91,53 @@ export default function DashboardScreen() {
   }, []);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+    <SafeAreaView style={styles.safe}>
       <ScrollView contentContainerStyle={styles.container}>
         {/* Header */}
         <View style={styles.headerRow}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => setSideNavVisible(true)}>
             <Ionicons name="menu" size={28} color="#222" />
           </TouchableOpacity>
+          <View
+            style={[
+              styles.headerTitleContainer,
+              { backgroundColor: charging ? "#22cc5e" : "#111" },
+            ]}
+          >
+            <Text style={styles.headerTitle}>
+              {charging == null ? "" : charging ? "Charging" : "Not Charging"}
+            </Text>
+          </View>
           <TouchableOpacity>
             <Ionicons name="search" size={26} color="#222" />
           </TouchableOpacity>
         </View>
 
-        {/* Battery Card */}
+        {/* Battery Gauge Card */}
         <View style={styles.batteryCard}>
-          <View style={styles.batteryIconContainer}>
-            <MaterialCommunityIcons
-              name={charging ? "battery-charging-60" : "battery-60"}
-              size={48}
-              color="#4ADE80"
-            />
-          </View>
-          <View style={{ marginLeft: 16, flex: 1 }}>
-            <Text style={styles.batteryLabel}>Battery Level</Text>
-            <Text style={styles.batteryPercent}>
+          <View style={styles.gaugeCircle}>
+            <Text style={styles.gaugePercent}>
               {batteryLevel !== null
                 ? `${Math.round(batteryLevel * 100)}%`
                 : "--"}
             </Text>
+            <Text style={styles.gaugeLabel}>Optimal charging</Text>
           </View>
         </View>
 
-        {/* Stats Row */}
-        <View style={styles.statsRow}>
-          <View style={styles.statBox}>
-            <Text style={styles.statLabel}>Time to full</Text>
-            <Text style={styles.statValue}>
+        {/* Battery Stats */}
+        <View style={styles.statsGrid}>
+          <View style={styles.statsCard}>
+            <Text style={styles.statsLabel}>Battery Health</Text>
+            <Text style={styles.statsValue}>
+              {batteryHealth
+                ? batteryHealth.charAt(0).toUpperCase() + batteryHealth.slice(1)
+                : "--"}
+            </Text>
+          </View>
+          <View style={styles.statsCard}>
+            <Text style={styles.statsLabel}>Time to full</Text>
+            <Text style={styles.statsValue}>
               {charging
                 ? estimatedTimeLeft
                   ? estimatedTimeLeft
@@ -102,108 +145,135 @@ export default function DashboardScreen() {
                 : "Not Charging"}
             </Text>
           </View>
-          <View style={styles.statBox}>
-            <Text style={styles.statLabel}>Health</Text>
-            <Text style={styles.statValue}>
-              {" "}
-              {batteryHealth
-                ? batteryHealth.charAt(0).toUpperCase() + batteryHealth.slice(1)
-                : "--"}
+        </View>
+
+        {/* Map */}
+        <View style={styles.mapCard}>
+          {!mapLoaded && (
+            <Text style={{ color: "#6B7280", textAlign: "center" }}>
+              Loading map...
             </Text>
-          </View>
-          <View style={styles.statBox}>
-            <Text style={styles.statLabel}>Status</Text>
-            <Text style={styles.statValue}>
-              {charging == null ? "" : charging ? "Charging" : "Not Charging"}
-            </Text>
-          </View>
+          )}
+          <MapView
+            style={styles.map}
+            mapType="satellite"
+            initialRegion={{
+              latitude: location?.latitude || STATION_COORDS[0].latitude,
+              longitude: location?.longitude || STATION_COORDS[0].longitude,
+              latitudeDelta: 0.05,
+              longitudeDelta: 0.05,
+            }}
+            showsUserLocation={!!location}
+            onMapReady={() => setMapLoaded(true)}
+            loadingEnabled
+            pitchEnabled={true}
+            rotateEnabled={true}
+            showsBuildings={true}
+            showsCompass={true}
+            camera={{
+              center: {
+                latitude: location?.latitude || STATION_COORDS[0].latitude,
+                longitude: location?.longitude || STATION_COORDS[0].longitude,
+              },
+              pitch: 60,
+              heading: 0,
+              altitude: 1000,
+              zoom: 16,
+            }}
+          >
+            {location && (
+              <Marker
+                coordinate={location}
+                title="You are here"
+                pinColor="#22C55E"
+              />
+            )}
+            {STATION_COORDS.map((station, idx) => (
+              <Marker
+                key={idx}
+                coordinate={{
+                  latitude: station.latitude,
+                  longitude: station.longitude,
+                }}
+                title={station.title}
+                description={station.address}
+              />
+            ))}
+          </MapView>
         </View>
 
         {/* Nearby Station */}
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Nearby Charging Stations</Text>
-          <TouchableOpacity>
+          <Text style={styles.sectionTitle}>Nearby Stations</Text>
+          <TouchableOpacity
+            onPress={() => {
+              router.push("/(dashboard)/MapScreen");
+            }}
+          >
             <Text style={styles.viewAll}>View all</Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.bigStationCard}>
-          <View
+        <FlatList
+          data={STATION_COORDS}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          keyExtractor={(item) => item.title}
+          contentContainerStyle={{ paddingLeft: 2, paddingBottom: 84 }}
+          renderItem={({ item }) => (
+            <View style={styles.stationCard}>
+              <Image source={{ uri: item.image }} style={styles.stationImg} />
+              <View style={{ flex: 1 }}>
+                <Text style={styles.stationName}>{item.title}</Text>
+                <Text style={styles.stationAddress}>{item.address}</Text>
+                <Text style={styles.stationDistance}>{item.ports} ports</Text>
+              </View>
+            </View>
+          )}
+        />
+        {/* SideNav Modal */}
+        <Modal
+          visible={visible}
+          transparent
+          animationType="none"
+          onRequestClose={onClose}
+        >
+          <TouchableOpacity
             style={{
               flex: 1,
-              borderRadius: 12,
-              overflow: "hidden",
-              width: "100%",
-              height: 400,
-              justifyContent: "center",
-              alignItems: "center",
+              backgroundColor: "rgba(0,0,0,0.18)",
+            }}
+            activeOpacity={1}
+            onPress={onClose}
+          />
+          <Animated.View
+            style={{
+              position: "absolute",
+              top: 0,
+              bottom: 0,
+              left: 0,
+              width: 300,
+              transform: [{ translateX: slideAnim }],
+              backgroundColor: "white",
+              shadowColor: "#000",
+              shadowOffset: { width: 2, height: 0 },
+              shadowOpacity: 0.25,
+              shadowRadius: 10,
+              elevation: 5,
             }}
           >
-            {!mapLoaded && (
-              <Text style={{ color: "#6B7280" }}>Loading map...</Text>
-            )}
-            <MapView
-              style={{
-                width: "100%",
-                height: "100%",
-                position: "absolute",
-                top: 0,
-                left: 0,
-                opacity: mapLoaded ? 1 : 0,
-              }}
-              mapType="satellite"
-              initialRegion={{
-                latitude: location?.latitude || STATION_COORDS[0].latitude,
-                longitude: location?.longitude || STATION_COORDS[0].longitude,
-                latitudeDelta: 0.05,
-                longitudeDelta: 0.05,
-              }}
-              showsUserLocation={!!location}
-              onMapReady={() => setMapLoaded(true)}
-              loadingEnabled
-              pitchEnabled={true}
-              rotateEnabled={true}
-              showsBuildings={true}
-              showsCompass={true}
-              camera={{
-                center: {
-                  latitude: location?.latitude || STATION_COORDS[0].latitude,
-                  longitude: location?.longitude || STATION_COORDS[0].longitude,
-                },
-                pitch: 60, // tilt for 3D effect
-                heading: 0,
-                altitude: 1000,
-                zoom: 16,
-              }}
-            >
-              {/* User marker (optional, since showsUserLocation shows a blue dot) */}
-              {location && (
-                <Marker
-                  coordinate={location}
-                  title="You are here"
-                  pinColor="#22C55E"
-                />
-              )}
-              {/* Station markers */}
-              {STATION_COORDS.map((station, idx) => (
-                <Marker
-                  key={idx}
-                  coordinate={{
-                    latitude: station.latitude,
-                    longitude: station.longitude,
-                  }}
-                  title={station.title}
-                  description={station.address}
-                />
-              ))}
-            </MapView>
-          </View>
-        </View>
+            <SideNav onClose={onClose} />
+          </Animated.View>
+        </Modal>
       </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safe: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
   container: {
     padding: 20,
     backgroundColor: "#fff",
@@ -213,72 +283,114 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 24,
-    top: 24,
-    bottom: 10
+    marginBottom: 12,
+    marginTop: 0,
+  },
+  headerTitleContainer: {
+    flex: 1,
+    backgroundColor: "#22cc5e",
+    borderRadius: 18,
+    marginHorizontal: 55,
+    paddingVertical: 6,
+    paddingHorizontal: 18,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#22C55E",
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
   },
   headerTitle: {
-    color: "#222",
-    fontSize: 18,
-    fontWeight: "400",
-    flex: 1,
-    textAlign: "center",
-  },
-  userName: {
+    color: "#fff",
+    fontSize: 20,
     fontWeight: "bold",
-    fontSize: 22,
-    color: "#222",
+    textAlign: "center",
+    letterSpacing: 1,
   },
   batteryCard: {
-    flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#F6FCF9",
-    borderRadius: 18,
-    padding: 20,
-    marginBottom: 18,
+    backgroundColor: "#161c1b",
+    borderRadius: 24,
+    padding: 24,
+    marginBottom: 16,
+    marginTop: 8,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 3,
   },
-  batteryIconContainer: {
-    backgroundColor: "#E9F9F0",
-    borderRadius: 12,
-    padding: 10,
+  gaugeCircle: {
+    width: 180,
+    height: 180,
+    borderRadius: 90,
+    borderWidth: 8,
+    borderColor: "#22C55E",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#222d2a",
+    marginBottom: 8,
   },
-  batteryLabel: {
-    color: "#6B7280",
-    fontSize: 14,
-  },
-  batteryPercent: {
-    color: "#222",
-    fontSize: 32,
+  gaugePercent: {
+    color: "#fff",
+    fontSize: 40,
     fontWeight: "bold",
-    marginTop: 2,
   },
-  batteryMeta: {
-    color: "#6B7280",
-    fontSize: 13,
-    marginTop: 2,
+  gaugeLabel: {
+    color: "#b0f5d6",
+    fontSize: 16,
+    marginTop: 6,
   },
-  statsRow: {
+  statsGrid: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 18,
+    marginBottom: 10,
+    marginTop: 4,
   },
-  statBox: {
+  statsCard: {
     backgroundColor: "#F6FCF9",
-    borderRadius: 14,
-    padding: 14,
+    borderRadius: 16,
+    padding: 20,
     flex: 1,
-    marginHorizontal: 4,
+    marginHorizontal: 6,
     alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.04,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 1 },
+    elevation: 1,
   },
-  statLabel: {
+  statsLabel: {
     color: "#6B7280",
-    fontSize: 12,
+    fontSize: 13,
     marginBottom: 4,
   },
-  statValue: {
+  statsValue: {
     color: "#222",
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: "bold",
+  },
+  mapCard: {
+    backgroundColor: "#fff",
+    borderRadius: 5,
+    padding: 5,
+    marginBottom: 18,
+    minHeight: 250,
+    height: 250,
+    width: "100%",
+    alignSelf: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 2,
+    overflow: "hidden",
+  },
+  map: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 25,
   },
   sectionHeader: {
     flexDirection: "row",
@@ -298,57 +410,39 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   stationCard: {
-    backgroundColor: "#fff",
+    backgroundColor: "#F6FCF9",
     borderRadius: 16,
-    padding: 24,
-    shadowColor: "#000",
-    shadowOpacity: 0.07,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 2,
-    alignSelf: "center",
-    minHeight: 140,
-  },
-  bigStationCard: {
-    backgroundColor: "#fff",
-    borderRadius: 20,
-    padding: 5,
-    marginHorizontal: 0,
-    marginBottom: 20,
-    minHeight: 570,
-    width: "100%",
-    alignSelf: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.09,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 3,
-    justifyContent: "center",
-  },
-  stationRating: {
+    padding: 10,
+    width: 220,
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 6,
+    marginRight: 14,
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 1,
   },
-  ratingText: {
-    color: "#22C55E",
-    marginLeft: 4,
-    fontWeight: "bold",
-    fontSize: 13,
+  stationImg: {
+    width: 54,
+    height: 54,
+    borderRadius: 10,
+    marginRight: 10,
+    backgroundColor: "#eee",
   },
   stationName: {
     color: "#222",
     fontWeight: "bold",
-    fontSize: 16,
+    fontSize: 15,
     marginBottom: 2,
   },
   stationAddress: {
     color: "#6B7280",
-    fontSize: 13,
+    fontSize: 12,
     marginBottom: 6,
   },
   stationDistance: {
-    color: "#222",
+    color: "#22C55E",
     fontWeight: "bold",
     fontSize: 13,
   },

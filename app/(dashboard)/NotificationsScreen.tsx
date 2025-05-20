@@ -1,12 +1,13 @@
+import Navbar from "@/components/navbar/Navbar";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Switch,
-    Text,
-    View,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  View,
 } from "react-native";
 
 const NotificationsScreen: React.FC = () => {
@@ -16,45 +17,44 @@ const NotificationsScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Navbar title="Notifications" />
       <ScrollView contentContainerStyle={styles.scroll}>
-        <Text style={styles.header}>Notifications</Text>
-
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Notification Preferences</Text>
           <View style={styles.row}>
             <View style={styles.rowLeft}>
-              <Ionicons name="notifications-outline" size={20} color="#7a5a36" />
+              <Ionicons name="notifications-outline" size={20} color="#000" />
               <Text style={styles.rowLabel}>Push Notifications</Text>
             </View>
             <Switch
               value={pushEnabled}
               onValueChange={setPushEnabled}
-              thumbColor={pushEnabled ? "#7a5a36" : "#fff"}
-              trackColor={{ false: "#ccc", true: "#7a5a36" }}
+              thumbColor={pushEnabled ? "#000" : "#fff"}
+              trackColor={{ false: "#ccc", true: "#000" }}
             />
           </View>
           <View style={styles.row}>
             <View style={styles.rowLeft}>
-              <Feather name="mail" size={20} color="#7a5a36" />
+              <Feather name="mail" size={20} color="#000" />
               <Text style={styles.rowLabel}>Email Notifications</Text>
             </View>
             <Switch
               value={emailEnabled}
               onValueChange={setEmailEnabled}
-              thumbColor={emailEnabled ? "#7a5a36" : "#fff"}
-              trackColor={{ false: "#ccc", true: "#7a5a36" }}
+              thumbColor={emailEnabled ? "#000" : "#fff"}
+              trackColor={{ false: "#ccc", true: "#000" }}
             />
           </View>
           <View style={styles.row}>
             <View style={styles.rowLeft}>
-              <Feather name="message-square" size={20} color="#7a5a36" />
+              <Feather name="message-square" size={20} color="#000" />
               <Text style={styles.rowLabel}>SMS Notifications</Text>
             </View>
             <Switch
               value={smsEnabled}
               onValueChange={setSmsEnabled}
-              thumbColor={smsEnabled ? "#7a5a36" : "#fff"}
-              trackColor={{ false: "#ccc", true: "#7a5a36" }}
+              thumbColor={smsEnabled ? "#000" : "#fff"}
+              trackColor={{ false: "#ccc", true: "#000" }}
             />
           </View>
         </View>
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#7a5a36",
+    color: "#000",
     marginBottom: 18,
     alignSelf: "center",
   },
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#7a5a36",
+    color: "#000",
     marginBottom: 12,
   },
   row: {

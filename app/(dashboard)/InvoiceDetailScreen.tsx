@@ -1,3 +1,4 @@
+import Navbar from "@/components/navbar/Navbar";
 import { Feather } from "@expo/vector-icons";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import React from "react";
@@ -39,19 +40,8 @@ const InvoiceDetailScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Navbar title="Invoice Details" />
       <ScrollView contentContainerStyle={styles.scroll}>
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-          >
-            <Feather name="arrow-left" size={22} color="#222" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Invoice Details</Text>
-          <View style={{ width: 22 }} />
-        </View>
-
         {/* Invoice Card */}
         <View style={styles.invoiceContainer}>
           <View style={styles.invoiceHeader}>
@@ -313,7 +303,7 @@ const styles = StyleSheet.create({
   totalValueFinal: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#7a5a36",
+    color: "#22cc5e",
   },
   paymentInfo: {
     fontSize: 14,
@@ -330,7 +320,7 @@ const styles = StyleSheet.create({
   actionButton: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#7a5a36",
+    backgroundColor: "#22cc5e",
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 10,

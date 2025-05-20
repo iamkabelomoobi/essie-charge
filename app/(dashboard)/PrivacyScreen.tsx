@@ -1,13 +1,14 @@
+import Navbar from "@/components/navbar/Navbar";
 import { Feather } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Switch,
-    Text,
-    TouchableOpacity,
-    View,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 const PrivacyScreen: React.FC = () => {
@@ -17,45 +18,44 @@ const PrivacyScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Navbar title="Privacy" />
       <ScrollView contentContainerStyle={styles.scroll}>
-        <Text style={styles.header}>Privacy</Text>
-
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Privacy Settings</Text>
           <View style={styles.row}>
             <View style={styles.rowLeft}>
-              <Feather name="user" size={20} color="#7a5a36" />
+              <Feather name="user" size={20} color="#000" />
               <Text style={styles.rowLabel}>Show My Profile Publicly</Text>
             </View>
             <Switch
               value={showProfile}
               onValueChange={setShowProfile}
-              thumbColor={showProfile ? "#7a5a36" : "#fff"}
-              trackColor={{ false: "#ccc", true: "#7a5a36" }}
+              thumbColor={showProfile ? "#000" : "#fff"}
+              trackColor={{ false: "#ccc", true: "#000" }}
             />
           </View>
           <View style={styles.row}>
             <View style={styles.rowLeft}>
-              <Feather name="share-2" size={20} color="#7a5a36" />
+              <Feather name="share-2" size={20} color="#000" />
               <Text style={styles.rowLabel}>Allow Data Sharing</Text>
             </View>
             <Switch
               value={shareData}
               onValueChange={setShareData}
-              thumbColor={shareData ? "#7a5a36" : "#fff"}
-              trackColor={{ false: "#ccc", true: "#7a5a36" }}
+              thumbColor={shareData ? "#000" : "#fff"}
+              trackColor={{ false: "#ccc", true: "#000" }}
             />
           </View>
           <View style={styles.row}>
             <View style={styles.rowLeft}>
-              <Feather name="target" size={20} color="#7a5a36" />
+              <Feather name="target" size={20} color="#000" />
               <Text style={styles.rowLabel}>Personalized Ads</Text>
             </View>
             <Switch
               value={personalizedAds}
               onValueChange={setPersonalizedAds}
-              thumbColor={personalizedAds ? "#7a5a36" : "#fff"}
-              trackColor={{ false: "#ccc", true: "#7a5a36" }}
+              thumbColor={personalizedAds ? "#000" : "#fff"}
+              trackColor={{ false: "#ccc", true: "#000" }}
             />
           </View>
         </View>
@@ -63,7 +63,7 @@ const PrivacyScreen: React.FC = () => {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Manage Data</Text>
           <TouchableOpacity style={styles.actionBtn}>
-            <Feather name="download" size={18} color="#7a5a36" />
+            <Feather name="download" size={18} color="#000" />
             <Text style={styles.actionText}>Download My Data</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.actionBtn}>
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#7a5a36",
+    color: "#000",
     marginBottom: 18,
     alignSelf: "center",
   },
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#7a5a36",
+    color: "#000",
     marginBottom: 12,
   },
   row: {
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
   actionText: {
     marginLeft: 12,
     fontSize: 15,
-    color: "#7a5a36",
+    color: "#000",
     fontWeight: "500",
   },
 });

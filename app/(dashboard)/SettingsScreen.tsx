@@ -16,11 +16,12 @@ import {
   View,
 } from "react-native";
 
+import Navbar from "@/components/navbar/Navbar";
 import { useNavigation } from "@react-navigation/native";
 
 const user = {
-  name: "James Braun",
-  email: "jamesbraun@gmail.com",
+  name: "John Doe",
+  email: "john.doe@gmail.com",
   avatar: "https://randomuser.me/api/portraits/men/1.jpg",
 };
 
@@ -40,16 +41,16 @@ const SettingsScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Navbar title="Settings" />
       <ScrollView contentContainerStyle={styles.scroll}>
-        {/* Header */}
-        <Text style={styles.header}>Settings</Text>
-
         {/* User Info */}
-        <View style={styles.profileContainer}>
-          <Image source={{ uri: user.avatar }} style={styles.avatar} />
-          <View style={styles.profileText}>
-            <Text style={styles.name}>{user.name}</Text>
-            <Text style={styles.email}>{user.email}</Text>
+        <View style={styles.profileCard}>
+          <View style={styles.profileContainer}>
+            <Image source={{ uri: user.avatar }} style={styles.avatar} />
+            <View style={styles.profileText}>
+              <Text style={styles.name}>{user.name}</Text>
+              <Text style={styles.email}>{user.email}</Text>
+            </View>
           </View>
         </View>
 
@@ -93,20 +94,11 @@ const SettingsScreen: React.FC = () => {
               />
             }
           />
-          {/* <SettingsRow
-            icon={
-              <Ionicons name="color-palette-outline" size={20} color="#222" />
-            }
-            label="Appearance"
-          /> */}
+
           <SettingsRow
             icon={<Feather name="globe" size={20} color="#222" />}
             label="Language"
           />
-          {/* <SettingsRow
-            icon={<MaterialIcons name="palette" size={20} color="#222" />}
-            label="Theme"
-          /> */}
 
           <SettingsRow
             icon={<Feather name="file-text" size={20} color="#222" />}
@@ -125,24 +117,52 @@ const SettingsScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fafbfc", paddingTop: 24 },
+  container: { flex: 1, backgroundColor: "#fafbfc" },
   scroll: { padding: 20, paddingBottom: 100 },
-  header: { fontSize: 24, fontWeight: "bold", marginBottom: 18 },
-  profileContainer: {
+  headerRow: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 18,
+  },
+  backBtn: {
+    padding: 4,
+    marginRight: 10,
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: "bold",
+    textAlign: "left",
+    flex: 1,
+  },
+  profileCard: {
+    backgroundColor: "#fff",
+    borderRadius: 18,
+    padding: 20,
+    marginBottom: 18,
+    shadowColor: "#000",
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
+  },
+  profileContainer: {
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 18,
   },
   avatar: {
-    width: 54,
-    height: 54,
-    borderRadius: 27,
-    marginRight: 14,
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    marginBottom: 12,
     backgroundColor: "#eee",
   },
-  profileText: {},
-  name: { fontSize: 18, fontWeight: "bold" },
-  email: { fontSize: 14, color: "#888" },
+  profileText: {
+    alignItems: "center",
+  },
+  name: { fontSize: 20, fontWeight: "bold", textAlign: "center" },
+  email: { fontSize: 15, color: "#888", textAlign: "center" },
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",

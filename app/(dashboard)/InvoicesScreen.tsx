@@ -1,3 +1,4 @@
+import Navbar from "@/components/navbar/Navbar";
 import { Feather } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
@@ -50,7 +51,6 @@ const InvoicesScreen: React.FC = () => {
   const [filter, setFilter] = useState<"All" | "Paid" | "Pending">("All");
   const navigation = useNavigation<any>();
 
-  // Filter invoices based on filter and search
   const filteredInvoices = invoices.filter((invoice) => {
     const matchesFilter = filter === "All" || invoice.status === filter;
     const matchesSearch =
@@ -93,9 +93,7 @@ const InvoicesScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Invoices</Text>
-      </View>
+      <Navbar title="Invoices" />
 
       <View style={styles.searchContainer}>
         <Feather name="search" size={18} color="#888" />
@@ -212,11 +210,11 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   activeFilterBtn: {
-    backgroundColor: "#7a5a36",
+    backgroundColor: "#000",
   },
   filterText: {
     fontSize: 14,
-    color: "#7a5a36",
+    color: "#000",
   },
   activeFilterText: {
     color: "#fff",

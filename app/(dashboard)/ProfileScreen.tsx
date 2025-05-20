@@ -1,3 +1,4 @@
+import Navbar from "@/components/navbar/Navbar";
 import { Feather } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
@@ -22,18 +23,8 @@ const ProfileScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Navbar title="Profile" />
       <ScrollView contentContainerStyle={styles.scroll}>
-        {/* Header */}
-        <View style={styles.headerBox}>
-          <Feather
-            name="menu"
-            size={22}
-            color="#7a5a36"
-            style={styles.menuIcon}
-          />
-          <Text style={styles.header}>My Account</Text>
-        </View>
-
         {/* Avatar */}
         <View style={styles.avatarContainer}>
           <View style={styles.avatarCircle}>
@@ -137,10 +128,10 @@ const ProfileScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff", top: 20 },
-  scroll: { padding: 0, paddingBottom: 40 },
+  container: { flex: 1, backgroundColor: "#fafbfc", paddingTop: 24 },
+  scroll: { padding: 20, paddingBottom: 100 },
   headerBox: {
-    backgroundColor: "#f8e3cb",
+    backgroundColor: "#22c55e",
     borderBottomLeftRadius: 32,
     borderBottomRightRadius: 32,
     paddingTop: 24,
@@ -156,12 +147,11 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#7a5a36",
+    color: "#000",
     marginTop: 16,
   },
   avatarContainer: {
     alignItems: "center",
-    marginTop: -40,
     marginBottom: 18,
   },
   avatarCircle: {
@@ -182,7 +172,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 6,
     bottom: 6,
-    backgroundColor: "#7a5a36",
+    backgroundColor: "#000",
     borderRadius: 14,
     padding: 4,
     borderWidth: 2,
@@ -195,7 +185,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 15,
     fontWeight: "500",
-    color: "#7a5a36",
+    color: "#000",
     marginBottom: 6,
     marginTop: 12,
   },
@@ -226,7 +216,7 @@ const styles = StyleSheet.create({
   },
   countryCode: {
     fontSize: 15,
-    color: "#7a5a36",
+    color: "#000",
     fontWeight: "bold",
   },
   row: {
@@ -239,7 +229,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   saveBtn: {
-    backgroundColor: "#7a5a36",
+    backgroundColor: "#22c55e",
     borderRadius: 10,
     marginTop: 24,
     paddingVertical: 14,

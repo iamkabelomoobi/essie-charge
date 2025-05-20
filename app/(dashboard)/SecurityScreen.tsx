@@ -1,14 +1,15 @@
+import Navbar from "@/components/navbar/Navbar";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Switch,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 const SecurityScreen: React.FC = () => {
@@ -20,9 +21,8 @@ const SecurityScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Navbar title="Security" />
       <ScrollView contentContainerStyle={styles.scroll}>
-        <Text style={styles.header}>Security</Text>
-
         {/* Change Password */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Change Password</Text>
@@ -63,26 +63,26 @@ const SecurityScreen: React.FC = () => {
           <Text style={styles.sectionTitle}>Security Options</Text>
           <View style={styles.row}>
             <View style={styles.rowLeft}>
-              <MaterialIcons name="fingerprint" size={22} color="#7a5a36" />
+              <MaterialIcons name="fingerprint" size={22} color="#000" />
               <Text style={styles.rowLabel}>Enable Biometrics</Text>
             </View>
             <Switch
               value={biometrics}
               onValueChange={setBiometrics}
-              thumbColor={biometrics ? "#7a5a36" : "#fff"}
-              trackColor={{ false: "#ccc", true: "#7a5a36" }}
+              thumbColor={biometrics ? "#000" : "#fff"}
+              trackColor={{ false: "#ccc", true: "#000" }}
             />
           </View>
           <View style={styles.row}>
             <View style={styles.rowLeft}>
-              <Feather name="shield" size={20} color="#7a5a36" />
+              <Feather name="shield" size={20} color="#000" />
               <Text style={styles.rowLabel}>Two-Factor Authentication</Text>
             </View>
             <Switch
               value={twoFA}
               onValueChange={setTwoFA}
-              thumbColor={twoFA ? "#7a5a36" : "#fff"}
-              trackColor={{ false: "#ccc", true: "#7a5a36" }}
+              thumbColor={twoFA ? "#000" : "#fff"}
+              trackColor={{ false: "#ccc", true: "#000" }}
             />
           </View>
         </View>
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#7a5a36",
+    color: "#000",
     marginBottom: 18,
     alignSelf: "center",
   },
@@ -111,12 +111,12 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#7a5a36",
+    color: "#000",
     marginBottom: 12,
   },
   label: {
     fontSize: 14,
-    color: "#7a5a36",
+    color: "#000",
     marginBottom: 6,
     marginTop: 10,
     fontWeight: "500",
@@ -130,10 +130,10 @@ const styles = StyleSheet.create({
     color: "#222",
     marginBottom: 4,
     borderWidth: 1,
-    borderColor: "#e5e5e5",
+    borderColor: "#000",
   },
   saveBtn: {
-    backgroundColor: "#7a5a36",
+    backgroundColor: "#22c55e",
     borderRadius: 10,
     marginTop: 18,
     paddingVertical: 12,

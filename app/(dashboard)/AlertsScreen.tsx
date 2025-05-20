@@ -5,10 +5,12 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
+  ScrollView,
   TouchableOpacity,
   View,
 } from "react-native";
 import { useAlerts } from "../../context/AlertsContext";
+import Navbar from "@/components/navbar/Navbar";
 
 const alertsData = [
   {
@@ -141,60 +143,60 @@ const AlertsScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.headerRow}>
-        <Text style={styles.title}>Alerts</Text>
-
-        <TouchableOpacity style={styles.readAllBtn} onPress={markAllRead}>
-          <Ionicons name="checkmark-done" size={18} color="#22C55E" />
-          <Text style={styles.readAllText}>Read all</Text>
+      <Navbar title="Alerts" />
+      <ScrollView contentContainerStyle={styles.scroll}>
+        <TouchableOpacity onPress={markAllRead} style={styles.readAllBtn}>
+          <Text style={styles.readAllText}>Mark all as read</Text>
         </TouchableOpacity>
-      </View>
-      <FlatList
-        data={alerts}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={{ paddingVertical: 16 }}
-        renderItem={({ item }) => {
-          const icon = iconMap[item.type as AlertType] || iconMap.info;
-          return (
-            <View style={[styles.alertCard, item.read && styles.alertCardRead]}>
-              <Ionicons
-                name={icon.name as any}
-                size={28}
-                color={icon.color}
-                style={{ marginRight: 12, opacity: item.read ? 0.4 : 1 }}
-              />
-              <View style={{ flex: 1 }}>
-                <Text style={[styles.alertTitle, item.read && styles.readText]}>
-                  {item.title}
-                </Text>
-                <Text
-                  style={[styles.alertMessage, item.read && styles.readText]}
-                >
-                  {item.message}
-                </Text>
-                <Text style={[styles.alertTime, item.read && styles.readText]}>
-                  {item.time}
-                </Text>
+        <FlatList
+          data={alerts}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={{ paddingVertical: 16 }}
+          renderItem={({ item }) => {
+            const icon = iconMap[item.type as AlertType] || iconMap.info;
+            return (
+              <View
+                style={[styles.alertCard, item.read && styles.alertCardRead]}
+              >
+                <Ionicons
+                  name={icon.name as any}
+                  size={28}
+                  color={icon.color}
+                  style={{ marginRight: 12, opacity: item.read ? 0.4 : 1 }}
+                />
+                <View style={{ flex: 1 }}>
+                  <Text
+                    style={[styles.alertTitle, item.read && styles.readText]}
+                  >
+                    {item.title}
+                  </Text>
+                  <Text
+                    style={[styles.alertMessage, item.read && styles.readText]}
+                  >
+                    {item.message}
+                  </Text>
+                  <Text
+                    style={[styles.alertTime, item.read && styles.readText]}
+                  >
+                    {item.time}
+                  </Text>
+                </View>
               </View>
-            </View>
-          );
-        }}
-        ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
-        ListEmptyComponent={
-          <Text style={styles.emptyText}>No alerts at this time.</Text>
-        }
-      />
+            );
+          }}
+          ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
+          ListEmptyComponent={
+            <Text style={styles.emptyText}>No alerts at this time.</Text>
+          }
+        />
+      </ScrollView>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    paddingHorizontal: 20,
-    paddingTop: 24,
-  },
+  container: { flex: 1, backgroundColor: "#fafbfc", paddingTop: 24 },
+  scroll: { padding: 20, paddingBottom: 100 },
   headerRow: {
     flexDirection: "row",
     alignItems: "center",
